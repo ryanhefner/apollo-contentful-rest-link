@@ -7,6 +7,7 @@ import type { ApolloLink } from '@apollo/client'
 interface ClientOptions {
   space: string;
   accessToken: string;
+  previewAccessToken?: string;
   environment?: string;
   insecure?: boolean;
   host?: string;
