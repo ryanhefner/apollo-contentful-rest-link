@@ -29,7 +29,9 @@ perform your `GraphQL` queries like you normally do.
 
 The `ContentfulRestLink` class accepts two arguments, `clientOptions` and `queryDefaults` _(optional)_.
 
-* `clientOptions` - Accepts all Contentful Client options, reference available [here](https://contentful.github.io/contentful.js/contentful/7.14.6/contentful.html#.createClient)
+* `clientOptions` - Accepts all Contentful Client options, reference available [here](https://contentful.github.io/contentful.js/contentful/7.14.6/contentful.html#.createClient).
+
+_The only exception is that if you plan to use the Contentful Preview API, you’ll have to include an optional `previewAccessToken`, which will create a client for all queries where `preview` variable is `true`._
 
 * `queryDefaults` - This is just a handy tool if you happen to have some defaults
 that you would like to include for all queries being made to Contentful. Handy ones
