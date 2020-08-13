@@ -30,6 +30,6 @@ interface QueryDefaults {
   include?: number;
 }
 
-declare class ContentfulRestLink extends ApolloLink {
+export class ContentfulRestLink extends ApolloLink {
   constructor(clientOptions: ClientOptions, queryDefaults?: QueryDefaults);
 }
