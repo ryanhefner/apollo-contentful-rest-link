@@ -5,6 +5,25 @@ import { graphqlParser, contentfulResolver } from 'contentful-parsers'
 
 const contentful = require('contentful')
 
+/**
+ * Contentful API - Search Parameters
+ * @ref https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters
+ */
+const contentfulReservedParameters = [
+  'access_token',
+  'include',
+  'locale',
+  'content_type',
+  'select',
+  'query',
+  'links_to_entry',
+  'links_to_asset',
+  'order',
+  'limit',
+  'skip',
+  'mimetype_group',
+]
+
 export default class ContentfulRestLink extends ApolloLink {
   constructor(clientOptions, queryDefaults = {}) {
     super()
@@ -40,6 +59,13 @@ export default class ContentfulRestLink extends ApolloLink {
       const operationQueries = Object.keys(variables)
         .filter(variableKey => operationVariables.includes(variableKey))
         .map(variableKey => {
+          // If the variable key is known search parameter for the Contentful API,
+          // just pass it through, un-parsed
+          if (contentfulReservedParameters.includes(variableKey)) {
+            return { [variableKey]: variables[variableKey] }
+          }
+
+          // Convert variable into query format supported in Contentful API
           // @todo Confirm if [in] is the proper default to apply to these - Ryan
           const queryKey = `fields.${variableKey}[in]`
           return { [queryKey]: variables[variableKey] }
