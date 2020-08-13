@@ -22,6 +22,8 @@ const contentfulReservedParameters = [
   'limit',
   'skip',
   'mimetype_group',
+  'where',
+  'preview',
 ]
 
 export default class ContentfulRestLink extends ApolloLink {
@@ -34,6 +36,14 @@ export default class ContentfulRestLink extends ApolloLink {
     this.client = contentful.createClient({
       ...clientOptions,
     })
+
+    if (clientOptions.hasOwnProperty('previewAccessToken')) {
+      this.previewClient = contentful.createClient({
+        ...clientOptions,
+        accessToken: clientOptions.previewAccessToken,
+        host: 'preview.contentful.com',
+      })
+    }
   }
 
   request(operation, forward) {
@@ -59,6 +69,9 @@ export default class ContentfulRestLink extends ApolloLink {
       const operationQueries = Object.keys(variables)
         .filter(variableKey => operationVariables.includes(variableKey))
         .map(variableKey => {
+          // @todo See if we should also just extract variables, returning null and
+          // running filter after this. - Ryan
+
           // If the variable key is known search parameter for the Contentful API,
           // just pass it through, un-parsed
           if (contentfulReservedParameters.includes(variableKey)) {
@@ -89,8 +102,16 @@ export default class ContentfulRestLink extends ApolloLink {
             content_type: rootField.replace('Collection', '')
           }]
 
+      // Choose client based on `preview` variable
+      const client =
+        variables.hasOwnProperty('preview') &&
+        variables.preview &&
+        this.previewClient
+          ? this.previewClient
+          : this.client
+
       // Contentful query
-      this.client[queryMethod](...queryArgs)
+      client[queryMethod](...queryArgs)
         .then(contentfulData => {
           // Query contentfulData via GraphQL query
           graphql(
