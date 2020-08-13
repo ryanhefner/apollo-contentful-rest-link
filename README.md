@@ -22,6 +22,23 @@ yarn add apollo-contentful-rest-link
 
 ## How to use
 
+`ContentfulRestLink` makes it easy to query the Contentful REST API via GraphQL +
+Apollo, without all the fuss about query size, nor complexity, limit issues. Simply
+setup the `link` when you are creating your `ApolloClient`, then feel free to
+perform your `GraphQL` queries like you normally do.
+
+The `ContentfulRestLink` class accepts two arguments, `clientOptions` and `queryDefaults` _(optional)_.
+
+* `clientOptions` - Accepts all Contentful Client options, reference available [here](https://contentful.github.io/contentful.js/contentful/7.14.6/contentful.html#.createClient)
+
+* `queryDefaults` - This is just a handy tool if you happen to have some defaults
+that you would like to include for all queries being made to Contentful. Handy ones
+that you might use would be, `{ include: 10, locale: 'en-US' }`. Where `include` sets
+the depth of linked references to include in responses, [Link docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/links),
+and `locale` specifies the localization of the entry(ies) returned, [Localization docs](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/localization).
+
+## Example
+
 ```js
 import ApolloClient from 'apollo-client'
 import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
