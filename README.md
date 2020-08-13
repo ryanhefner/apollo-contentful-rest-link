@@ -22,7 +22,29 @@ yarn add apollo-contentful-rest-link
 
 ## How to use
 
+```js
+import ApolloClient from 'apollo-client'
+import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
+import ContentfulRestLink from 'apollo-contentful-rest-link'
+import introspectionQueryResultData from 'schema/fragmentTypes.json'
 
+const space = process.env.CONTENTFUL_SPACE
+const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN
+
+const fragmentMatcher = new IntrospectionFragmentMatcher({
+  introspectionQueryResultData,
+})
+
+const apolloClient = new ApolloClient({
+  link: new ContentfulRestLink({
+    space,
+    accessToken,
+  }, {
+    include: 10,
+  }),
+  cache: new InMemoryCache({ fragmentMatcher }),
+});
+```
 
 ## License
 
