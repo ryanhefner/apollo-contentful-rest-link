@@ -3,7 +3,7 @@
   "version": "0.2.4",
   "description": "Perform GraphQL queries against Contentful’s Rest API. No more, query size limits! No more, query complexities!!",
   "scripts": {
-    "clean": "rimraf constants.js index.js utils.js es umd",
+    "clean": "rimraf constants.js ContentfulRestLink.js index.js utils.js es umd",
     "prebuild": "npm run clean",
     "build": "node ./tools/build.js",
     "watch": "babel ./src -d . --ignore __mocks__,__tests__,**/*.test.js --watch",
@@ -52,6 +52,7 @@
     "types",
     "umd",
     "constants.js",
+    "ContentfulRestLink.js",
     "index.js",
     "utils.js"
   ],

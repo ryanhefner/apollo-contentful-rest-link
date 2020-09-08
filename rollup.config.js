@@ -11,7 +11,7 @@ const config = {
     name: 'apollo-contentful-rest-link',
     file: './index.js',
     format: 'umd',
-    exports: 'default',
+    exports: 'named',
     globals: {},
     banner: `/*! ${pkg.name} v${pkg.version} | (c) ${new Date().getFullYear()} Ryan Hefner | ${pkg.license} License | https://github.com/${pkg.repository} !*/`,
     footer: '/* follow me on Twitter! @ryanhefner */',
@@ -22,8 +22,8 @@ const config = {
   plugins: [
     babel({
       exclude: 'node_modules/**',
-      // babelHelpers: process.env.BABEL_ENV === 'umd' ? 'bundled' : 'runtime',
       babelHelpers: 'runtime',
+      // babelHelpers: process.env.BABEL_ENV === 'umd' ? 'bundled' : 'runtime',
     }),
     resolve(),
     commonjs({
