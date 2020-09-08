@@ -1,10 +1,10 @@
-import type { ApolloLink } from '@apollo/client'
+import { ApolloLink } from '@apollo/client'
 
 /**
  * ContentfulRestLink
  */
 
-interface ClientOptions {
+export interface ClientOptions {
   space: string;
   accessToken: string;
   previewAccessToken?: string;
@@ -27,12 +27,10 @@ interface ClientOptions {
   retryLimit?: number;
 }
 
-interface QueryDefaults {
+export interface QueryDefaults {
   include?: number;
 }
 
-interface ContentfulRestLink extends ApolloLink {}
-
-declare var ContentfulRestLink: {
-  new (clientOptions: ClientOptions, queryDefaults?: QueryDefaults): ContentfulRestLink;
+export declare class ContentfulRestLink extends ApolloLink {
+  constructor(clientOptions: ClientOptions, queryDefaults?: QueryDefaults);
 }
