@@ -3,6 +3,8 @@
 [![npm](https://img.shields.io/npm/v/apollo-contentful-rest-link?style=flat-square)](https://www.pkgstats.com/pkg:apollo-contentful-rest-link)
 [![NPM](https://img.shields.io/npm/l/apollo-contentful-rest-link?style=flat-square)](https://www.pkgstats.com/pkg:apollo-contentful-rest-link)
 [![npm](https://img.shields.io/npm/dt/apollo-contentful-rest-link?style=flat-square)](https://www.pkgstats.com/pkg:apollo-contentful-rest-link)
+[![Coveralls github](https://img.shields.io/coveralls/github/ryanhefner/apollo-contentful-rest-link?style=flat-square)](https://coveralls.io/github/ryanhefner/apollo-contentful-rest-link)
+![CircleCI](https://img.shields.io/circleci/build/github/ryanhefner/apollo-contentful-rest-link?style=flat-square)
 
 Perform GraphQL queries against Contentful’s Rest API. No more, query size limits! No more, query complexities!!
 
@@ -42,17 +44,12 @@ and `locale` specifies the localization of the entry(ies) returned, [Localizatio
 ## Example
 
 ```js
-import ApolloClient from 'apollo-client'
-import { InMemoryCache, IntrospectionFragmentMatcher } from 'apollo-cache-inmemory'
-import ContentfulRestLink from 'apollo-contentful-rest-link'
-import introspectionQueryResultData from 'schema/fragmentTypes.json'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { ContentfulRestLink } from 'apollo-contentful-rest-link'
+import introspectionQueryResultData from 'schema/possibleTypes.json'
 
 const space = process.env.CONTENTFUL_SPACE
 const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN
-
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-  introspectionQueryResultData,
-})
 
 const apolloClient = new ApolloClient({
   link: new ContentfulRestLink({
@@ -61,7 +58,7 @@ const apolloClient = new ApolloClient({
   }, {
     include: 10,
   }),
-  cache: new InMemoryCache({ fragmentMatcher }),
+  cache: new InMemoryCache({ possibleTypes }),
 });
 ```
 
