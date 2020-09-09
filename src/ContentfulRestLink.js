@@ -49,7 +49,7 @@ export class ContentfulRestLink extends ApolloLink {
 
     return obs.flatMap(({ data, errors }) => new Observable(observer => {
       // Find name to apply as root field of the GraphQL data
-      const rootField = getRootKey(operation)
+      const rootKey = getRootKey(operation)
 
       // Set queryArgs based on variables/queryMethod
       const queryVariables = parseQueryVariables(operation)
@@ -65,7 +65,7 @@ export class ContentfulRestLink extends ApolloLink {
         : [{
             ...this.queryDefaults,
             ...omit(queryVariables, ['preview']),
-            content_type: rootField.replace('Collection', '')
+            content_type: rootKey.replace('Collection', '')
           }]
 
       // Choose client based on `preview` variable
@@ -82,7 +82,7 @@ export class ContentfulRestLink extends ApolloLink {
 
           // Parse Contentful data to expected GraphQL shape
           const parsedData = graphqlParser(
-            rootField,
+            rootKey,
             contentfulData,
             definitionMap[operationName]
           )
