@@ -64,10 +64,10 @@
   "jsnext:main": "src/index.js",
   "types": "types",
   "dependencies": {
-    "@apollo/client": "^3.1.4",
+    "@apollo/client": "^3.1.5",
     "@babel/runtime": "^7.11.2",
     "contentful": "^7.14.6",
-    "contentful-parsers": "^1.2.3",
+    "contentful-parsers": "^1.2.6",
     "graphql-anywhere": "^4.2.7",
     "lomit": "^0.3.1"
   },
@@ -79,7 +79,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
-    "@rollup/plugin-babel": "^5.2.0",
+    "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
