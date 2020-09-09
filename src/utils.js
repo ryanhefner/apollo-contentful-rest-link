@@ -1,16 +1,34 @@
-import { DefinitionKind, SelectionKind, SelectionNameKind, VariableKind } from './constants'
+import omit from 'lomit'
+import {
+  DefinitionKind,
+  SelectionKind,
+  VariableKind,
+} from './constants'
 
+/**
+ * Return root query object to work against based on if an operationName key
+ * is set in operation.
+ *
+ * @param {Operation} operation
+ * @return {Object}
+ */
 const getRootQuery = (operation) => {
   const { query, operationName } = operation
   return query.hasOwnProperty(operationName) ? query[operationName] : query
 }
 
+/**
+ * Return the root key that will contain the data returned via the GraphQL query.
+ *
+ * @param {Operation} operation
+ * @return {string}
+ */
 export const getRootKey = (operation) => {
   return getRootQuery(operation).definitions
-    .find(definition => definition.kind === DefinitionKind.OperationDefinition)
-    ?.selectionSet?.selections
-    .find(selection => selection.name.kind === SelectionNameKind.Name)
-    ?.name?.value
+    .find(definition => definition.operation === 'query')
+    .selectionSet.selections
+    .find(selection => selection.name.kind === 'Name')
+    .name.value;
 }
 
 /**
@@ -84,8 +102,8 @@ const getSearchKey = (variableKey) => {
  * with the actual fields/arguments that are being requested in the
  * API request.
  *
- * @param {object} operation
- * @return {object}
+ * @param {Object} operation
+ * @return {Object}
  */
 const buildVariableMap = (operation) => {
   const variableMap = {}
@@ -95,19 +113,35 @@ const buildVariableMap = (operation) => {
     .forEach(definition => {
       definition.selectionSet.selections.forEach(selection => {
         selection.arguments.forEach(argument => {
-          if (argument?.value?.fields) {
+          if (argument.value && argument.value.fields) {
             argument.value.fields.forEach(field => {
-              if (field?.value?.name?.value && field?.kind && field?.name?.value) {
+              const validField = field.value
+                && field.value.name
+                && field.value.name.value
+                && field.kind
+                && field.name
+                && field.name.value
+
+              if (validField) {
                 variableMap[field.value.name.value] = {
                   kind: field.kind,
                   field: field.name.value,
                 }
               }
             })
-          } else if (argument?.value?.name?.value && argument?.kind && argument?.name?.value) {
-            variableMap[argument.value.name.value] = {
-              kind: argument.kind,
-              field: argument.name.value,
+          } else {
+            const validArgument = argument.value
+              && argument.value.name
+              && argument.value.name.value
+              && argument.kind
+              && argument.name
+              && argument.name.value
+
+            if (validArgument) {
+              variableMap[argument.value.name.value] = {
+                kind: argument.kind,
+                field: argument.name.value,
+              }
             }
           }
         })
@@ -134,14 +168,15 @@ const extractSelections = (selectionSet, definitions) => {
 
   selectionSet.selections.forEach(selection => {
     if (selection.kind === SelectionKind.Field) {
-      if (selection?.name?.value) {
+      if (selection.name && selection.name.value) {
         selections[selection.name.value] = extractSelections(selection.selectionSet, definitions)
       }
     } else if (selection.kind === SelectionKind.FragmentSpread) {
       const fragmentDefinition = definitions.find(
         definition =>
           definition.kind === DefinitionKind.FramentDefinition &&
-          definition?.name?.value && selection?.name?.value &&
+          definition.name && definition.name.value &&
+          selection.name && selection.name.value &&
           definition.name.value === selection.name.value
       )
       if (fragmentDefinition) {
@@ -166,11 +201,11 @@ export const buildDefinitionMap = (operation) => {
     definition => definition.kind === DefinitionKind.OperationDefinition
   )
 
-  if (!operationDefinition) {
-    return {}
-  }
-
-  if (!operationDefinition?.name?.value) {
+  if (!(
+    operationDefinition &&
+    operationDefinition.name &&
+    operationDefinition.definition.value
+  )) {
     return {}
   }
 
@@ -206,7 +241,8 @@ export const parseQueryVariables = (operation) => {
           case VariableKind.Argument:
             // If the variable key is known search parameter for the Contentful API,
             // just pass it through un-parsed
-            if (variableMap?.[variableKey]?.field && contentfulReservedParameters.includes(variableMap[variableKey].field)) {
+            const fieldExists = variableMap[variableKey] && variableMap[variableKey].field
+            if (fieldExists && contentfulReservedParameters.includes(variableMap[variableKey].field)) {
               // Exclude preview variable is not set to true
               if (variableMap[variableKey].field === 'preview' && !variables[variableKey]) {
                 return null
