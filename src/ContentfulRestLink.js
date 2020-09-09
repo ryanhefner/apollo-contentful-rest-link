@@ -36,9 +36,9 @@ export class ContentfulRestLink extends ApolloLink {
   /**
    *
    *
-   * @param {Object} operation
-   * @param {function} forward
-   * @return {Observable}
+   * @param {Operation} operation
+   * @param {NextLink} forward
+   * @return {Observable<FetchResult> | null}
    */
   request(operation, forward) {
     const { query, operationName } = operation

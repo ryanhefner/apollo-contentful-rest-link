@@ -123,9 +123,9 @@ const buildVariableMap = (operation) => {
  * to the parsed REST API response, in order to make sure the response
  * fulfills the contract of the request.
  *
- * @param {array} selectionSet
- * @param {array} definitions
- * @return {object}
+ * @param {Array.<Object>} selectionSet
+ * @param {Array.<Object>} definitions
+ * @return {Object}
  */
 const extractSelections = (selectionSet, definitions) => {
   if (!selectionSet || !selectionSet.selections || !selectionSet.selections.length) return null
@@ -156,8 +156,8 @@ const extractSelections = (selectionSet, definitions) => {
 /**
  *
  *
- * @param {object} operation
- * @return {object}
+ * @param {Object} operation
+ * @return {Object}
  */
 export const buildDefinitionMap = (operation) => {
   const { query } = operation
@@ -182,11 +182,11 @@ export const buildDefinitionMap = (operation) => {
 /**
  * Convert the query variables to a format the Contentful API understands
  *
- * @param {object} query
- * @param {object} variables
- * @param {object} variableMap
+ * @param {Object} query
+ * @param {Object} variables
+ * @param {Object} variableMap
  * @param {string} operationName
- * @retrun {object}
+ * @retrun {Object}
  */
 export const parseQueryVariables = (operation) => {
   const { variables } = operation
