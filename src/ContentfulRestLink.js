@@ -55,7 +55,7 @@ export class ContentfulRestLink extends ApolloLink {
       const queryVariables = parseQueryVariables(operation)
 
       // Define the query method to use based on variables
-      const queryMethod = queryVariables.hasOwnProperty('id')
+      const queryMethod = queryVariables && queryVariables.hasOwnProperty('id')
         ? 'getEntry'
         : 'getEntries'
 
@@ -70,6 +70,7 @@ export class ContentfulRestLink extends ApolloLink {
 
       // Choose client based on `preview` variable
       const usePreview = this.previewClient
+        && queryVariables
         && queryVariables.hasOwnProperty('preview')
         && queryVariables.preview
       const client = usePreview ? this.previewClient : this.client

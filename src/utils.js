@@ -14,7 +14,7 @@ import {
  */
 const getRootQuery = (operation) => {
   const { query, operationName } = operation
-  return query.hasOwnProperty(operationName) ? query[operationName] : query
+  return query && query.hasOwnProperty(operationName) ? query[operationName] : query
 }
 
 /**
@@ -24,11 +24,17 @@ const getRootQuery = (operation) => {
  * @return {string}
  */
 export const getRootKey = (operation) => {
-  return getRootQuery(operation).definitions
-    .find(definition => definition.operation === 'query')
-    .selectionSet.selections
-    .find(selection => selection.name.kind === 'Name')
-    .name.value;
+  const definition = getRootQuery(operation).definitions.find(definition => definition.operation === 'query')
+
+  if (definition) {
+    const selection = definition.selectionSet.selections.find(selection => selection.name.kind === 'Name')
+
+    if (selection) {
+      return selection.name.value
+    }
+  }
+
+  return null
 }
 
 /**
@@ -162,25 +168,37 @@ const buildVariableMap = (operation) => {
  * @return {Object}
  */
 const extractSelections = (selectionSet, definitions) => {
-  if (!selectionSet || !selectionSet.selections || !selectionSet.selections.length) return null
+  if (!(
+    selectionSet &&
+    selectionSet.selections &&
+    selectionSet.selections.length
+  )) return null
 
   const selections = {}
 
   selectionSet.selections.forEach(selection => {
     if (selection.kind === SelectionKind.Field) {
       if (selection.name && selection.name.value) {
-        selections[selection.name.value] = extractSelections(selection.selectionSet, definitions)
+        selections[selection.name.value] = extractSelections(
+          selection.selectionSet,
+          definitions
+        )
       }
     } else if (selection.kind === SelectionKind.FragmentSpread) {
       const fragmentDefinition = definitions.find(
         definition =>
           definition.kind === DefinitionKind.FramentDefinition &&
-          definition.name && definition.name.value &&
-          selection.name && selection.name.value &&
+          definition.name &&
+          definition.name.value &&
+          selection.name &&
+          selection.name.value &&
           definition.name.value === selection.name.value
       )
       if (fragmentDefinition) {
-        selections[`...${selection.name.value}`] = extractSelections(fragmentDefinition.selectionSet, definitions)
+        selections[`...${selection.name.value}`] = extractSelections(
+          fragmentDefinition.selectionSet,
+          definitions
+        )
       }
     }
   })
@@ -204,7 +222,7 @@ export const buildDefinitionMap = (operation) => {
   if (!(
     operationDefinition &&
     operationDefinition.name &&
-    operationDefinition.definition.value
+    operationDefinition.name.value
   )) {
     return {}
   }
@@ -233,7 +251,10 @@ export const parseQueryVariables = (operation) => {
 
   const operationQueries = Object.keys(variableMap)
     .filter(variableKey => {
-      return variables.hasOwnProperty(variableKey) && variableMap.hasOwnProperty(variableKey)
+      return variables &&
+        variables.hasOwnProperty(variableKey) &&
+        variableMap &&
+        variableMap.hasOwnProperty(variableKey)
     })
     .map(variableKey => {
       try {
