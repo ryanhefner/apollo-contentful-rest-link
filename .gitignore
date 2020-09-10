@@ -15,3 +15,6 @@ umd
 
 # Include Rollup config
 !rollup.config.js
+
+# Temporarily ignore site
+site/
