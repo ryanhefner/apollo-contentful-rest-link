@@ -83,7 +83,6 @@
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "apollo-client": "^2.6.10",
     "babel-plugin-dev-expression": "^0.2.2",
     "coveralls": "^3.1.0",
     "dtslint": "^4.0.0",

@@ -1,36 +1,28 @@
-import { ApolloLink } from '@apollo/client'
+import {
+  ApolloLink,
+  FetchResult,
+  Observable,
+  Operation,
+  NextLink,
+} from '@apollo/client'
+import { CreateClientParams } from 'contentful'
 
-/**
- * ContentfulRestLink
- */
+export declare namespace ContentfulRestLink {
+  export interface ClientOptions extends CreateClientParams {}
 
-export interface ClientOptions {
-  space: string;
-  accessToken: string;
-  previewAccessToken?: string;
-  environment?: string;
-  insecure?: boolean;
-  host?: string;
-  basePath?: string;
-  httpAgent?:	any;
-  httpsAgent?: any;
-  proxy?:	any;
-  headers?:	any;
-  adapter?:	() => void;
-  resolveLinks?: boolean;
-  removeUnresolved?: boolean;
-  retryOnError?: boolean;
-  logHandler?: () => void;
-  application?: string;
-  integration?: string;
-  timeout?:	number;
-  retryLimit?: number;
-}
-
-export interface QueryDefaults {
-  include?: number;
+  export interface QueryDefaults {
+    include?: number;
+  }
 }
 
 export declare class ContentfulRestLink extends ApolloLink {
-  constructor(clientOptions: ClientOptions, queryDefaults?: QueryDefaults);
+  private clientOptions?: ContentfulRestLink.ClientOptions;
+  private queryDefaults?: ContentfulRestLink.QueryDefaults;
+
+  constructor(
+    clientOptions: ContentfulRestLink.ClientOptions,
+    queryDefaults?: ContentfulRestLink.QueryDefaults
+  );
+
+  request(operation: Operation, forward?: NextLink): Observable<FetchResult> | null;
 }
